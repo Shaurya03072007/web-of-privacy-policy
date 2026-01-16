@@ -19,6 +19,10 @@ app.get('/terms', (req, res) => {
     res.sendFile(path.join(__dirname, 'terms.html'));
 });
 
+app.get('/delete-account', (req, res) => {
+    res.sendFile(path.join(__dirname, 'delete-account.html'));
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
