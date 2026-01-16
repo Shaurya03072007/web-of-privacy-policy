@@ -1,7 +1,7 @@
 {
-  "name": "chamundi-tv-portal",
+  "name": "aurora-live-streaming",
   "version": "1.0.0",
-  "description": "Web portal for Chamundi TV Live",
+  "description": "Web portal for Aurora LIVE Streaming",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
