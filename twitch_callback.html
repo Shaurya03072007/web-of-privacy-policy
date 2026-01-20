@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sso Callback</title>
+    <script>
+        window.onload = function() {
+            // Get the hash part of the URL (e.g., #access_token=...&scope=...)
+            var hash = window.location.hash;
+            
+            // Check if there's a hash, meaning login was successful
+            if (hash) {
+                // Construct the custom scheme URL
+                // Using 'auroralive' as the scheme. Ensure this matches AndroidManifest.
+                var deepLink = "auroralive://twitch/callback" + hash;
+                
+                // Redirect user to the app
+                window.location.replace(deepLink);
+                
+                // Optional: distinct UI while redirecting
+                document.body.innerHTML = "<h1>Redirecting to Aurora Live...</h1><p>If you are not redirected automatically, <a href='" + deepLink + "'>click here</a>.</p>";
+            } else {
+                // No token found (e.g. user denied or error)
+                // In Implicit Grant flow, error details are in query params if hash is missing, 
+                // but sometimes also in hash. 
+                var query = window.location.search;
+                if (query.includes("error=")) {
+                     document.body.innerHTML = "<h1>Login Failed</h1><p>Twitch reported an error. Please return to the app and try again.</p>";
+                } else {
+                     document.body.innerHTML = "<h1>Processing...</h1>";
+                }
+            }
+        };
+    </script>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        a { color: #9146FF; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Authenticating...</h1>
+</body>
+</html>

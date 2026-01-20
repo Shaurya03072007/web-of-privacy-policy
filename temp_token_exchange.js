@@ -2,7 +2,7 @@ const https = require('https');
 
 const APP_ID = '2008818269931292';
 const APP_SECRET = '637905f3eb7e4058fbf2111f5b0d4259';
-const SHORT_LIVED_TOKEN = 'EAAcjAnNlxxwBQs6nrrnrlOw2N3o45Gnu9iRFWnhNBzURVVPAcqcT43FT9kP8A8Tke81lAneQ6aImtS4zskjZBPnpGn3xySIdTFZCEDTC4T2DfKKeYlC3ZBkNIooQYZAgWBMBjmo69YMVHJHS4g6I3o1ptM6vWZA2CkWSmws45ccfYUJ0ZCCSVbaPnJfbTImXBwwf4AHurxS0VZAIDqA0tKAGq6b7IY66RRpUFrQx2Vtg7VIkTU1';
+const SHORT_LIVED_TOKEN = 'EAAcjAnNlxxwBQs7NKHCZAqS3vhzw7o6P34t4sY8STi5V9XGWpEwM9EODcJ9MBPWcidmbx6WwgeVnLQQoPc3FdXR3coSYk5Fh0oNce3DWknauRQvIHtlSZAyAM2ZACzMHdzrNSoA5rbc18KvBcwWPgFN2HBSYtYk66SAn1ZBpHv1oKvO4DnFdWK94j6zZBdhWv49S41cPaDv4SavY3qqk0';
 
 const url = `https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${APP_ID}&client_secret=${APP_SECRET}&fb_exchange_token=${SHORT_LIVED_TOKEN}`;
 
