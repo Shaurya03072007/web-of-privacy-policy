@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin <span class="text-aurora">Dashboard</span></h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </header>
+
+        <div id="content" class="glass-panel">
+            <div style="text-align: center; color: var(--text-secondary);">Loading Users...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/admin/users');
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = '/admin/index.html';
+                    return;
+                }
+                const data = await response.json();
+                renderTable(data.users);
+            } catch (err) {
+                document.getElementById('content').innerHTML = `<div style="color: var(--aurora-magenta); text-align: center;">Failed to load users: ${err.message}</div>`;
+            }
+        }
+
+        function renderTable(users) {
+            if (!users || users.length === 0) {
+                document.getElementById('content').innerHTML = '<div style="text-align: center; color: var(--text-secondary);">No users found.</div>';
+                return;
+            }
+
+            let html = `
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Tier</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(user => {
+                const isPremium = user.subscription_tier === 'premium';
+                const premiumAction = isPremium
+                    ? `<button class="action-btn btn-glass" style="color: var(--aurora-magenta);" onclick="updateTier('${user.id}', 'free')">Downgrade</button>`
+                    : `<button class="action-btn btn-primary" style="padding: 6px 16px; font-size: 0.8rem;" onclick="updateTier('${user.id}', 'premium')">Upgrade</button>`;
+
+                html += `
+                    <tr>
+                        <td style="color: white; font-weight: 500;">${user.email}</td>
+                        <td><span class="badge badge-${user.role || 'user'}">${user.role || 'user'}</span></td>
+                        <td><span class="badge badge-${isPremium ? 'premium' : 'free'}">${user.subscription_tier || 'free'}</span></td>
+                        <td style="color: var(--text-secondary);">${new Date(user.created_at).toLocaleDateString()}</td>
+                        <td>${user.role === 'admin' ? '' : premiumAction}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            document.getElementById('content').innerHTML = html;
+        }
+
+        async function updateTier(userId, newTier) {
+            if (!confirm(`Are you sure you want to change this user to ${newTier.toUpperCase()}?`)) return;
+
+            try {
+                const response = await fetch(`/api/admin/users/${userId}/tier`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tier: newTier })
+                });
+
+                if (response.ok) {
+                    loadUsers();
+                } else {
+                    alert('Failed to update tier');
+                }
+            } catch (err) {
+                alert('Error updating tier: ' + err.message);
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/admin/logout', { method: 'POST' });
+                window.location.href = '/admin/index.html';
+            } catch (e) {
+                console.error("Logout failed", e);
+                // Fallback
+                window.location.href = '/admin/index.html';
+            }
+        }
+
+        loadUsers();
+    </script>
+</body>
+
+</html>

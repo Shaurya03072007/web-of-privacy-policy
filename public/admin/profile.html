@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Profile</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <div class="container login-wrapper">
+        <div class="glass-panel login-card">
+            <h1 class="text-gradient" style="margin-bottom: 1.5rem;">My Profile</h1>
+            <p class="email" id="userEmail"
+                style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1.1rem;">Loading...</p>
+
+            <div id="tierContainer" style="margin-bottom: 2rem;">
+                <!-- Badge injected here -->
+            </div>
+
+            <p id="message" style="margin-bottom: 2.5rem; color: var(--text-primary); line-height: 1.6;">
+                Loading subscription details...
+            </p>
+
+            <button onclick="logout()" class="btn btn-glass" style="width: 100%;">Secure Signout</button>
+        </div>
+    </div>
+
+    <script>
+        async function loadProfile() {
+            try {
+                const response = await fetch('/api/admin/me');
+                if (!response.ok) {
+                    window.location.href = '/admin/index.html';
+                    return;
+                }
+                const user = await response.json();
+
+                document.getElementById('userEmail').textContent = user.email;
+
+                const isPremium = user.subscription_tier === 'premium';
+                const tierContainer = document.getElementById('tierContainer');
+                const message = document.getElementById('message');
+
+                if (isPremium) {
+                    tierContainer.innerHTML = '<span class="badge badge-premium" style="font-size: 1rem; padding: 8px 20px;">Premium Plan</span>';
+                    message.innerHTML = 'You are a <span class="text-aurora" style="font-weight: 700;">Premium Member</span>.<br>Enjoy 4K HDR streaming and unlimited multi-platform broadcasts.';
+                } else {
+                    tierContainer.innerHTML = '<span class="badge badge-free" style="font-size: 1rem; padding: 8px 20px;">Free Plan</span>';
+                    message.innerHTML = 'You are currently on the Free plan.<br>Upgrade to unlock 4K streaming and more.';
+                }
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/admin/logout', { method: 'POST' });
+                window.location.href = '/admin/index.html';
+            } catch (e) {
+                console.error("Logout failed", e);
+                window.location.href = '/admin/index.html';
+            }
+        }
+
+        loadProfile();
+    </script>
+</body>
+
+</html>
