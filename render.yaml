@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: aurora-live-streaming
+    runtime: node
+    plan: free
+    buildCommand: npm install && cd auroralivestream && npm install --include=dev && npm run build
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SERVER_BASE_URL
+        sync: false # Set to your Render URL, e.g. https://aurora-live-streaming.onrender.com
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
